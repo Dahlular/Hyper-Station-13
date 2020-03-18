@@ -119,6 +119,7 @@
 #define	TRAIT_STRONG_GRABBER	"strong_grabber"
 #define	TRAIT_CALCIUM_HEALER	"calcium_healer"
 #define TRAIT_BEEFRIEND 		"beefriend"
+#define TRAIT_SWIMMING			"swimming"			//only applied by /datum/element/swimming, for checking
 
  //non-mob traits
 #define TRAIT_PARALYSIS			"paralysis" //Used for limb-based paralysis, where replacing the limb will fix it
