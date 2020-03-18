@@ -10,12 +10,12 @@
     RegisterSignal(target, COMSIG_MOVABLE_MOVED, .proc/check_valid)
     ADD_TRAIT(target, TRAIT_SWIMMING, TRAIT_SWIMMING)		//seriously there's only one way to get this
 
-    /datum/element/swimming/Detach(datum/target)
-        . = ..()
-        UnregisterSignal(target, COMSIG_MOVABLE_MOVED)
-        REMOVE_TRAIT(target, TRAIT_SWIMMING, TRAIT_SWIMMING)
+/datum/element/swimming/Detach(datum/target)
+	. = ..()
+	UnregisterSignal(target, COMSIG_MOVABLE_MOVED)
+	REMOVE_TRAIT(target, TRAIT_SWIMMING, TRAIT_SWIMMING)
 
-    /datum/element/swimming/proc/check_valid(datum/source)
-        var/mob/living/L = source
-        if(!istype(L.loc, /turf/open/pool))
-            source.RemoveElement(/datum/element/swimming)
+/datum/element/swimming/proc/check_valid(datum/source)
+	var/mob/living/L = source
+	if(!istype(L.loc, /turf/open/pool))
+		source.RemoveElement(/datum/element/swimming)
