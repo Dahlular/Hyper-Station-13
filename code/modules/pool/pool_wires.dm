@@ -56,4 +56,4 @@
 			if(mend)
 				P.stat &= ~NOPOWER
 			else
-				P.stat |= NOPOWER 
+				P.stat |= NOPOWER
