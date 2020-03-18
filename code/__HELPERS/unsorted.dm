@@ -1130,7 +1130,7 @@ B --><-- A
 
 /proc/get_random_station_turf()
 	return safepick(get_area_turfs(pick(GLOB.the_station_areas)))
-	
+
 /proc/get_safe_random_station_turf()
 	for (var/i in 1 to 5)
 		var/list/L = get_area_turfs(pick(GLOB.the_station_areas))
@@ -1575,3 +1575,7 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 	for(var/i in L)
 		if(condition.Invoke(i))
 			. |= i
+
+/proc/CallAsync(datum/source, proctype, list/arguments)
+	set waitfor = FALSE
+	return call(source, proctype)(arglist(arguments))
