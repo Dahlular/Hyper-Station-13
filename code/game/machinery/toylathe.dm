@@ -1,23 +1,22 @@
-#define AUTOLATHE_MAIN_MENU       1
-#define AUTOLATHE_CATEGORY_MENU   2
-#define AUTOLATHE_SEARCH_MENU     3
+#define AUTOYLATHE_MAIN_MENU       1
+#define AUTOYLATHE_CATEGORY_MENU   2
+#define AUTOYLATHE_SEARCH_MENU     3
 
-/obj/machinery/autolathe
-	name = "autolathe"
-	desc = "It produces items using metal and glass."
+/obj/machinery/autoylathe
+	name = "autoylathe"
+	desc = "It produces toys using plastic, metal and glass."
 	icon_state = "autolathe"
 	density = TRUE
 	use_power = IDLE_POWER_USE
 	idle_power_usage = 10
 	active_power_usage = 100
-	circuit = /obj/item/circuitboard/machine/autolathe
+	circuit = /obj/item/circuitboard/machine/autoylathe
 	layer = BELOW_OBJ_LAYER
 
 	var/operating = FALSE
 	var/list/L = list()
 	var/list/LL = list()
 	var/hacked = FALSE
-	var/hackable = TRUE
 	var/disabled = 0
 	var/shocked = FALSE
 	var/hack_wire
@@ -34,46 +33,36 @@
 	var/screen = 1
 
 	var/list/categories = list(
-							"Tools",
-							"Electronics",
-							"Construction",
-							"T-Comm",
-							"Security",
-							"Machinery",
-							"Medical",
+							"Toys",
+							"Figurines",
+							"Pistols",
+							"Rifles",
+							"Heavy",
+							"Melee",
+							"Armor",
+							"Adult",
 							"Misc",
-							"Dinnerware",
 							"Imported"
 							)
 
-/obj/machinery/autolathe/Initialize()
-	var/static/list/allowed_types = list(
+/obj/machinery/autoylathe/Initialize()
+	var/static/list/allowed_materials = list(
 		/datum/material/iron,
 		/datum/material/glass,
-		/datum/material/gold,
-		/datum/material/silver,
-		/datum/material/diamond,
-		/datum/material/uranium,
-		/datum/material/plasma,
-		/datum/material/bluespace,
-		/datum/material/bananium,
-		/datum/material/titanium,
-		/datum/material/runite,
-		/datum/material/plastic,
-		/datum/material/adamantine,
-		/datum/material/mythril
+		/datum/material/plastic
 		)
-	AddComponent(/datum/component/material_container, allowed_types, _show_on_examine=TRUE, _after_insert=CALLBACK(src, .proc/AfterMaterialInsert))
+	AddComponent(/datum/component/material_container, allowed_materials, 0, TRUE, null, null, CALLBACK(src, .proc/AfterMaterialInsert))
 	. = ..()
-	wires = new /datum/wires/autolathe(src)
-	stored_research = new /datum/techweb/specialized/autounlocking/autolathe
+
+	wires = new /datum/wires/autoylathe(src)
+	stored_research = new /datum/techweb/specialized/autounlocking/autoylathe
 	matching_designs = list()
 
-/obj/machinery/autolathe/Destroy()
+/obj/machinery/autoylathe/Destroy()
 	QDEL_NULL(wires)
 	return ..()
 
-/obj/machinery/autolathe/ui_interact(mob/user)
+/obj/machinery/autoylathe/ui_interact(mob/user)
 	. = ..()
 	if(!is_operational())
 		return
@@ -84,24 +73,24 @@
 	var/dat
 
 	switch(screen)
-		if(AUTOLATHE_MAIN_MENU)
+		if(AUTOYLATHE_MAIN_MENU)
 			dat = main_win(user)
-		if(AUTOLATHE_CATEGORY_MENU)
+		if(AUTOYLATHE_CATEGORY_MENU)
 			dat = category_win(user,selected_category)
-		if(AUTOLATHE_SEARCH_MENU)
+		if(AUTOYLATHE_SEARCH_MENU)
 			dat = search_win(user)
 
-	var/datum/browser/popup = new(user, "autolathe", name, 400, 500)
+	var/datum/browser/popup = new(user, "Autoylathe", name, 400, 500)
 	popup.set_content(dat)
 	popup.open()
 
-/obj/machinery/autolathe/on_deconstruction()
+/obj/machinery/autoylathe/on_deconstruction()
 	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
 	materials.retrieve_all()
 
-/obj/machinery/autolathe/attackby(obj/item/O, mob/user, params)
+/obj/machinery/autoylathe/attackby(obj/item/O, mob/user, params)
 	if (busy)
-		to_chat(user, "<span class=\"alert\">The autolathe is busy. Please wait for completion of previous operation.</span>")
+		to_chat(user, "<span class=\"alert\">The autoylathe is busy. Please wait for completion of previous operation.</span>")
 		return TRUE
 
 	if(default_deconstruction_screwdriver(user, "autolathe_t", "autolathe", O))
@@ -136,18 +125,16 @@
 
 	return ..()
 
-/obj/machinery/autolathe/proc/AfterMaterialInsert(obj/item/item_inserted, id_inserted, amount_inserted)
-	if(istype(item_inserted, /obj/item/stack/ore/bluespace_crystal))
-		use_power(MINERAL_MATERIAL_AMOUNT / 10)
-	else if(item_inserted.custom_materials?.len && item_inserted.custom_materials[SSmaterials.GetMaterialRef(/datum/material/glass)])
+/obj/machinery/autoylathe/proc/AfterMaterialInsert(obj/item/item_inserted, id_inserted, amount_inserted)
+	if(item_inserted.custom_materials?.len && item_inserted.custom_materials[SSmaterials.GetMaterialRef(/datum/material/glass)])
 		flick("autolathe_r",src)//plays glass insertion animation by default otherwise
 	else
 		flick("autolathe_o",src)//plays metal insertion animation
 
-		use_power(min(1000, amount_inserted / 100))
+	use_power(min(1000, amount_inserted / 100))
 	updateUsrDialog()
 
-/obj/machinery/autolathe/Topic(href, href_list)
+/obj/machinery/autoylathe/Topic(href, href_list)
 	if(..())
 		return
 	if (!busy)
@@ -175,10 +162,8 @@
 
 			var/coeff = (is_stack ? 1 : prod_coeff) //stacks are unaffected by production coefficient
 			var/total_amount = 0
-
 			for(var/MAT in being_built.materials)
 				total_amount += being_built.materials[MAT]
-
 			var/power = max(2000, (total_amount)*multiplier/5) //Change this to use all materials
 
 			var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
@@ -220,13 +205,13 @@
 					matching_designs.Add(D)
 			updateUsrDialog()
 	else
-		to_chat(usr, "<span class=\"alert\">The autolathe is busy. Please wait for completion of previous operation.</span>")
+		to_chat(usr, "<span class=\"alert\">The autoylathe is busy. Please wait for completion of previous operation.</span>")
 
 	updateUsrDialog()
 
 	return
 
-/obj/machinery/autolathe/proc/make_item(power, var/list/materials_used, var/list/picked_materials, multiplier, coeff, is_stack)
+/obj/machinery/autoylathe/proc/make_item(power, list/materials_used, list/picked_materials, multiplier, coeff, is_stack)
 	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
 	var/atom/A = drop_location()
 	use_power(power)
@@ -235,20 +220,18 @@
 	if(is_stack)
 		var/obj/item/stack/N = new being_built.build_path(A, multiplier)
 		N.update_icon()
-		N.autolathe_crafted(src)
+		N.autoylathe_crafted(src)
 	else
 		for(var/i=1, i<=multiplier, i++)
 			var/obj/item/new_item = new being_built.build_path(A)
-			new_item.autolathe_crafted(src)
-
+			new_item.autoylathe_crafted(src)
 			if(length(picked_materials))
 				new_item.set_custom_materials(picked_materials, 1 / multiplier) //Ensure we get the non multiplied amount
-
 	icon_state = "autolathe"
 	busy = FALSE
 	updateDialog()
 
-/obj/machinery/autolathe/RefreshParts()
+/obj/machinery/autoylathe/RefreshParts()
 	var/T = 0
 	for(var/obj/item/stock_parts/matter_bin/MB in component_parts)
 		T += MB.rating*75000
@@ -257,22 +240,16 @@
 	T=1.2
 	for(var/obj/item/stock_parts/manipulator/M in component_parts)
 		T -= M.rating*0.2
-	prod_coeff = min(1,max(0,T)) // Coeff going 1 -> 0,8 -> 0,6 -> 0,4
+	prod_coeff = CLAMP(T,1,0) // Coeff going 1 -> 0,8 -> 0,6 -> 0,4
 
-/obj/machinery/autolathe/examine(mob/user)
-	. += ..()
-	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
-	if(in_range(user, src) || isobserver(user))
-		. += "<span class='notice'>The status display reads: Storing up to <b>[materials.max_amount]</b> material units.<br>Material consumption at <b>[prod_coeff*100]%</b>.</span>"
-
-/obj/machinery/autolathe/proc/main_win(mob/user)
-	var/dat = "<div class='statusDisplay'><h3>Autolathe Menu:</h3><br>"
+/obj/machinery/autoylathe/proc/main_win(mob/user)
+	var/dat = "<div class='statusDisplay'><h3>Autoylathe Menu:</h3><br>"
 	dat += materials_printout()
 
 	dat += "<form name='search' action='?src=[REF(src)]'>\
 	<input type='hidden' name='src' value='[REF(src)]'>\
 	<input type='hidden' name='search' value='to_search'>\
-	<input type='hidden' name='menu' value='[AUTOLATHE_SEARCH_MENU]'>\
+	<input type='hidden' name='menu' value='[AUTOYLATHE_SEARCH_MENU]'>\
 	<input type='text' name='to_search'>\
 	<input type='submit' value='Search'>\
 	</form><hr>"
@@ -285,14 +262,14 @@
 			dat += "</tr><tr>"
 			line_length = 1
 
-		dat += "<td><A href='?src=[REF(src)];category=[C];menu=[AUTOLATHE_CATEGORY_MENU]'>[C]</A></td>"
+		dat += "<td><A href='?src=[REF(src)];category=[C];menu=[AUTOYLATHE_CATEGORY_MENU]'>[C]</A></td>"
 		line_length++
 
 	dat += "</tr></table></div>"
 	return dat
 
-/obj/machinery/autolathe/proc/category_win(mob/user,selected_category)
-	var/dat = "<A href='?src=[REF(src)];menu=[AUTOLATHE_MAIN_MENU]'>Return to main menu</A>"
+/obj/machinery/autoylathe/proc/category_win(mob/user,selected_category)
+	var/dat = "<A href='?src=[REF(src)];menu=[AUTOYLATHE_MAIN_MENU]'>Return to main menu</A>"
 	dat += "<div class='statusDisplay'><h3>Browsing [selected_category]:</h3><br>"
 	dat += materials_printout()
 
@@ -328,8 +305,8 @@
 	dat += "</div>"
 	return dat
 
-/obj/machinery/autolathe/proc/search_win(mob/user)
-	var/dat = "<A href='?src=[REF(src)];menu=[AUTOLATHE_MAIN_MENU]'>Return to main menu</A>"
+/obj/machinery/autoylathe/proc/search_win(mob/user)
+	var/dat = "<A href='?src=[REF(src)];menu=[AUTOYLATHE_MAIN_MENU]'>Return to main menu</A>"
 	dat += "<div class='statusDisplay'><h3>Search results:</h3><br>"
 	dat += materials_printout()
 
@@ -357,7 +334,7 @@
 	dat += "</div>"
 	return dat
 
-/obj/machinery/autolathe/proc/materials_printout()
+/obj/machinery/autoylathe/proc/materials_printout()
 	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
 	var/dat = "<b>Total amount:</b> [materials.total_amount] / [materials.max_amount] cm<sup>3</sup><br>"
 	for(var/mat_id in materials.materials)
@@ -367,7 +344,7 @@
 			dat += "<b>[M.name] amount:</b> [mineral_amount] cm<sup>3</sup><br>"
 	return dat
 
-/obj/machinery/autolathe/proc/can_build(datum/design/D, amount = 1)
+/obj/machinery/autoylathe/proc/can_build(datum/design/D, amount = 1)
 	if(D.make_reagents.len)
 		return FALSE
 
@@ -382,7 +359,7 @@
 
 	return materials.has_materials(required_materials)
 
-/obj/machinery/autolathe/proc/get_design_cost(datum/design/D)
+/obj/machinery/autoylathe/proc/get_design_cost(datum/design/D)
 	var/coeff = (ispath(D.build_path, /obj/item/stack) ? 1 : prod_coeff)
 	var/dat
 	for(var/i in D.materials)
@@ -393,7 +370,7 @@
 			dat += "[D.materials[i] * coeff] [M.name] "
 	return dat
 
-/obj/machinery/autolathe/proc/reset(wire)
+/obj/machinery/autoylathe/proc/reset(wire)
 	switch(wire)
 		if(WIRE_HACK)
 			if(!wires.is_cut(wire))
@@ -405,8 +382,8 @@
 			if(!wires.is_cut(wire))
 				disabled = FALSE
 
-/obj/machinery/autolathe/proc/shock(mob/user, prb)
-	if(stat & (BROKEN|NOPOWER))		// unpowered, no shock
+/obj/machinery/autoylathe/proc/shock(mob/user, prb)
+	if(stat & (BROKEN|NOPOWER))    // unpowered, no shock
 		return FALSE
 	if(!prob(prb))
 		return FALSE
@@ -418,29 +395,21 @@
 	else
 		return FALSE
 
-/obj/machinery/autolathe/proc/adjust_hacked(state)
+/obj/machinery/autoylathe/proc/adjust_hacked(state)
 	hacked = state
-	if(!hackable && hacked)
-		return
 	for(var/id in SSresearch.techweb_designs)
-		var/datum/design/D = SSresearch.techweb_design_by_id(id)
-		if((D.build_type & AUTOLATHE) && ("hacked" in D.category))
+		var/datum/design/D = SSresearch.techweb_designs[id]
+		if((D.build_type & AUTOYLATHE) && ("hacked" in D.category))
 			if(hacked)
 				stored_research.add_design(D)
 			else
 				stored_research.remove_design(D)
 
-/obj/machinery/autolathe/hacked/Initialize()
+/obj/machinery/autoylathe/hacked/Initialize()
 	. = ..()
 	adjust_hacked(TRUE)
 
-/obj/machinery/autolathe/secure
-	name = "secured autolathe"
-	desc = "An autolathe reprogrammed with security protocols to prevent hacking."
-	hackable = FALSE
-	circuit = /obj/item/circuitboard/machine/autolathe/secure
-
-//Called when the object is constructed by an autolathe
-//Has a reference to the autolathe so you can do !!FUN!! things with hacked lathes
-/obj/item/proc/autolathe_crafted(obj/machinery/autolathe/A)
+//Called when the object is constructed by an autoylathe
+//Has a reference to the autoylathe so you can do !!FUN!! things with hacked lathes
+/obj/item/proc/autoylathe_crafted(obj/machinery/autoylathe/A)
 	return
