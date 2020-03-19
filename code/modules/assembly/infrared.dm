@@ -2,7 +2,7 @@
 	name = "infrared emitter"
 	desc = "Emits a visible or invisible beam and is triggered when the beam is interrupted."
 	icon_state = "infrared"
-	custom_materials = list(/datum/material/iron=1000, /datum/material/glass=500)
+	materials = list(MAT_METAL=1000, MAT_GLASS=500)
 	is_position_sensitive = TRUE
 
 	var/on = FALSE
@@ -10,7 +10,7 @@
 	var/maxlength = 8
 	var/list/obj/effect/beam/i_beam/beams
 	var/olddir = 0
-	var/turf/listeningTo
+	var/datum/component/redirect/listener
 	var/hearing_range = 3
 
 /obj/item/assembly/infra/Initialize()
@@ -28,13 +28,13 @@
 
 /obj/item/assembly/infra/Destroy()
 	STOP_PROCESSING(SSobj, src)
-	listeningTo = null
+	QDEL_NULL(listener)
 	QDEL_LIST(beams)
 	. = ..()
 
 /obj/item/assembly/infra/examine(mob/user)
-	. = ..()
-	. += "<span class='notice'>The infrared trigger is [on?"on":"off"].</span>"
+	..()
+	to_chat(user, "<span class='notice'>The infrared trigger is [on?"on":"off"].</span>")
 
 /obj/item/assembly/infra/activate()
 	if(!..())
@@ -69,7 +69,7 @@
 		holder.update_icon()
 	return
 
-/obj/item/assembly/infra/dropped(mob/user)
+/obj/item/assembly/infra/dropped()
 	. = ..()
 	if(holder)
 		holder_movement() //sync the dir of the device as well if it's contained in a TTV or an assembly holder
@@ -133,11 +133,11 @@
 	. = ..()
 	setDir(t)
 
-/obj/item/assembly/infra/throw_at(atom/target, range, speed, mob/thrower, spin=1, diagonals_first = 0, datum/callback/callback)
+/obj/item/assembly/infra/throw_at()
 	. = ..()
 	olddir = dir
 
-/obj/item/assembly/infra/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
+/obj/item/assembly/infra/throw_impact()
 	. = ..()
 	if(!olddir)
 		return
@@ -158,12 +158,8 @@
 	next_activate =  world.time + 30
 
 /obj/item/assembly/infra/proc/switchListener(turf/newloc)
-	if(listeningTo == newloc)
-		return
-	if(listeningTo)
-		UnregisterSignal(listeningTo, COMSIG_ATOM_EXITED)
-	RegisterSignal(newloc, COMSIG_ATOM_EXITED, .proc/check_exit)
-	listeningTo = newloc
+	QDEL_NULL(listener)
+	listener = newloc.AddComponent(/datum/component/redirect, list(COMSIG_ATOM_EXITED = CALLBACK(src, .proc/check_exit)))
 
 /obj/item/assembly/infra/proc/check_exit(datum/source, atom/movable/offender)
 	if(QDELETED(src))

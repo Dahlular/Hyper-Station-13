@@ -47,7 +47,7 @@
 	setDir(ini_dir)
 	move_update_air(T)
 
-/obj/structure/windoor_assembly/update_icon_state()
+/obj/structure/windoor_assembly/update_icon()
 	icon_state = "[facing]_[secure ? "secure_" : ""]windoor_assembly[state]"
 
 /obj/structure/windoor_assembly/CanPass(atom/movable/mover, turf/target)
@@ -338,8 +338,7 @@
 	set name = "Flip Windoor Assembly"
 	set category = "Object"
 	set src in oview(1)
-	var/mob/living/L = usr
-	if(!CHECK_MOBILITY(L, MOBILITY_PULL))
+	if(usr.stat || !usr.canmove || usr.restrained())
 		return
 
 	if(facing == "l")
@@ -350,3 +349,4 @@
 		to_chat(usr, "<span class='notice'>The windoor will now slide to the left.</span>")
 
 	update_icon()
+	return
