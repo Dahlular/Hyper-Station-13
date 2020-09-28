@@ -6,7 +6,7 @@
 /obj/item/book/lorebooks/welcome_to_kinaris
 	name = "Welcome to Kinaris!"
 	icon_state = "bookwelcometokinaris"
-	desc = "An introductory book given to immigrants of people who changed their Nanotrasen ways, and accepted the light of Kinaris, Radiance, and the Azurean Government."
+	desc = "An introductory datapad given to immigrants of people who changed their Nanotrasen ways, and accepted the light of Kinaris, Radiance, and the Azurean Government."
 	author = "V. Kinaris"
 	title = "Welcome to Kinaris!"
 	dat = {"<html>
@@ -78,6 +78,75 @@
                   
 
 
+				</body>
+				</html>
+				"}
+//cause fuck having proper html with a wiki lol
+/obj/item/book/lorebooks/kn_security_protocol
+	name = "Kinaris Security Protocol"
+	icon_state = "bookkinarissecurity"
+	desc = "A standardized datapad that offers up as both a guide and an educational resource to new or veteran officers."
+	author = "K. LYNN"
+	title = "Kinaris Security Protocol"
+	dat = {"<html>
+				<head>
+				<style>
+				h1 {font-size: 18px; margin: 15px 0px 5px;}
+				h2 {font-size: 15px; margin: 15px 0px 5px;}
+				li {margin: 2px 0px 2px 15px;}
+				ul {list-style: none; margin: 5px; padding: 0px;}
+				ol {margin: 5px; padding: 0px 15px;}
+				</style>
+				</head>
+				<body>
+				<h3 style="text-align: center;">Kinaris Protocol - Security</h3>
+				<hr>
+				This specific Protocol Datapad (PD) refers to the processes and operation of Sentient Security Personnel (SSP) in regards to their workplace and behavior within reasonable operating conditions. The usage of this PD is for both educational and referral purposes. Punishments given out by SSP should be based upon the data within this PD. Note that these should be a baseline, and following to the letter may or may not be preffered. Case-by-case basis analysis is encouraged.
+				<p>
+				<h2>Table of Contents...</h2>
+				<ol>
+				<li>Kinaris Security Protocol Basics
+				<li>Gear and You
+				<li>Brigging and You
+				<li>Crimes and Punishments
+				<li>Forewarning
+				</ol>
+				<p>
+				<hr>
+				<h1><u>Chapter 1</u></h1>
+				<h2>Kinaris Security Protocol Basics</h2>
+				<p>
+				The act of securing and protection any Kinaris asset is not an easy one. Difficulty can range from monotanous and dreary, to outright hellish and overwhelming. It is a SSP's job to ensure that regardless of circumstance, they are both mentally and physically equipped to deal with any situation that may come up. This section will cover the very basics of what you need to know to be educated in the instance of standard security work.
+				<p>
+				To act as a SSP, the first step would be to think like one. Sentient Security Personnel are equipped with a plethora of both resources and gear to apprehend criminals, as well an array of support from the station and heads alike. <u>Do not betray your station's trust.</u> Your job as an SSP should be- above all- securing peace. Before anything, you should always consider the outcome of your actions, and others' as well. A responsible SSP would understand when a good time to use a baton is, and when words will allow a better outcome. Lack of this proper resolve may result in uneasiness around your workplace, both from your team and those you are to protect. This is not only grounds for demotion when abuse is repeated, but may result in an abusive SSP's inevitable lynching. These effects can snowball into much worse; so ensure that you and your team are well-communicative, and are proper in terms of gear use and protocol. Catch problems at the source. Think like a proper SSP.
+				<p>
+				Following up a proper mindset, it is important to note the infinite complexity that situations may involve themselves in. A responsible SSP will always keep in mind truths and lies when proposed with a situation, and must acknowledge that their guess can be wrong as well. Following Kinaris Security Protocol to the letter may also be problematic, due to the malleable nature that people can involve themselves within. Leeway is important to give when necessary, and a firm hand provided otherwise. Know when to apply proper protocol, and when to give leeway.
+				<p>
+				<hr>
+				<h1><u>Chapter 2</u></h1>
+				<h2>Gear and You</h2>
+				<p>
+				Not only must an SSP know what mindset to be in, they must also recognize the effects of their gear and items, as well as when they're needed. This section will cover some items, and how they can be useful given certain circumstances.
+				<p>
+				<u>Handcuffs</u>
+				<br>
+				A tool utilized for restraining criminals on the wrists. Apply on both wrists, fasten and lock. These should only be used when transporting prisoners, NOT when they're in a cell. Can only be applied on creatures with applicable limbs.
+				<p>
+				<u>Flash</u>
+				<br>
+				A device with a bright bulb, used to temporarily disorient visuals, both on cyborgs and living creatures. While harmless, extended use may result in eye damage. Using in hand will result in an area of flash, while using against another will flash that specific being. Useless against anything with flash protection.
+				<p>
+				<u>Pepperspray</u>
+				<br>
+				A small nozzle used to spray irritant chemicals, most effective when used on the eyes of a living being who is not wearing eye protection. Otherwise, this item services as nothing more than an irritating spray. Can be refilled.
+				<p>
+				<u>Stunbaton</u>
+				<br>
+				An electrically charged rod with a prod on the end, which can be activated to deal incredible amounts of stamina drain. This is your primary melee-ranged tool, which should be applied to criminals approximately four times (size may vary, or until target is exhausted) followed up by handcuffing. Do not hit harmfully with this without just cause; requires a recharge after frequent use, and can be upgraded with better power cells.
+				<p>
+				<u>Flashbang</u>
+				<br>
+				A chemical payload that will prime upon activation, and will explode into a disorienting blast after a few seconds. Requires flash and ear protection to completely nullify it's effects, but being too close can override that. This is a prime tool for crowd control, and should only be used when it's absolutely necessary. Effective for dispersing crowds.
 				</body>
 				</html>
 				"}
